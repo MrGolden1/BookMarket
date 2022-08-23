@@ -22,16 +22,13 @@ class CustomUserSerializer(serializers.ModelSerializer):
 class ItemSerializer(serializers.ModelSerializer):
     class Meta:
         model = Item
-        fields = ('id', 'book', 'quantity', 'total_price', 'created_at', 'updated_at')
+        fields = ('id', 'book', 'quantity', 'total_price', 'created_at', 'updated_at','unit_price','cart')
         read_only_fields = ('created_at', 'updated_at', 'total_price')
-    def create(self, validated_data):
-        item = super().create(validated_data)
-        item.set_total_price()
-        return item
+
 class CartSerializer(serializers.ModelSerializer):
     class Meta:
         model = Cart
-        fields = ('id', 'user', 'items', 'total_price', 'created_at', 'updated_at')
+        fields = ('id', 'user', 'total_price', 'created_at', 'updated_at')
         read_only_fields = ('created_at', 'updated_at', 'total_price')
     def create(self, validated_data):
         items = validated_data.pop('items')
