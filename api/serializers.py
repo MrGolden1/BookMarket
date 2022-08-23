@@ -29,7 +29,7 @@ class CartSerializer(serializers.ModelSerializer):
     useremail = serializers.CharField(source='user.email')
     class Meta:
         model = Cart
-        fields = ('id', 'user_email', 'total_price', 'created_at', 'updated_at')
+        fields = ('id', 'useremail', 'total_price', 'created_at', 'updated_at')
         read_only_fields = ('created_at', 'updated_at', 'total_price')
     def create(self, validated_data):
         items = validated_data.pop('items')
