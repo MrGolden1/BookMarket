@@ -5,7 +5,6 @@ from django.dispatch import receiver
 
 @receiver(post_save, sender=Item)
 def create_total_price(sender, instance, created, **kwargs):
-    print('salam')
     instance.cart.set_total_price()
 @receiver(pre_save, sender=Item)
 def update_total_price(sender, instance, **kwargs):
@@ -15,3 +14,11 @@ def update_total_price(sender, instance, **kwargs):
 @receiver(post_delete, sender=Item)
 def delete_total_price(sender, instance, **kwargs):
     instance.cart.set_total_price()
+@receiver(post_save, sender=Book)
+def create_total_price(sender, instance, created, **kwargs):
+    if not created:
+        items = Item.objects.filter(book=instance)
+        for item in items:
+            item.unit_price = instance.price
+            item.total_price = item.quantity * instance.price
+            item.save()
