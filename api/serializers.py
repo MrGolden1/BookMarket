@@ -32,3 +32,8 @@ class CartSerializer(serializers.ModelSerializer):
         model = Cart
         fields = ('id', 'useremail','itemlist' ,'total_price', 'created_at', 'updated_at')
         read_only_fields = ('created_at', 'updated_at', 'total_price')
+    def create(self, validated_data):
+        items = validated_data.pop('itemlist')
+        cart = Cart(**validated_data)
+        cart.save()
+        return cart
