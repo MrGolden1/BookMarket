@@ -26,18 +26,7 @@ class ItemSerializer(serializers.ModelSerializer):
         read_only_fields = ('created_at', 'updated_at', 'total_price')
 
 class CartSerializer(serializers.ModelSerializer):
-    useremail = serializers.CharField(source='user.email')
     class Meta:
         model = Cart
-        fields = ('id', 'useremail','total_price', 'created_at', 'updated_at')
+        fields = ('id', 'user','total_price', 'created_at', 'updated_at')
         read_only_fields = ('created_at', 'updated_at', 'total_price')
-    def is_valid(self, raise_exception = True):
-        useremail =  self.initial_data['useremail']
-        if CustomUser.objects.filter(email = useremail).exists():
-            return True
-        return False
-    def create(self, validated_data):
-            user = CustomUser.objects.get(email = validated_data.get('usermail'))
-            cart = Cart(user = user)
-            cart.save()
-            return cart
