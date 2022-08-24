@@ -27,14 +27,8 @@ class ItemSerializer(serializers.ModelSerializer):
 
 class CartSerializer(serializers.ModelSerializer):
     useremail = serializers.CharField(source='user.email')
+    itemlist = ItemSerializer(many=True, read_only=True)
     class Meta:
         model = Cart
-        fields = ('id', 'useremail', 'total_price', 'created_at', 'updated_at')
+        fields = ('id', 'useremail','items' ,'total_price', 'created_at', 'updated_at')
         read_only_fields = ('created_at', 'updated_at', 'total_price')
-    def create(self, validated_data):
-        items = validated_data.pop('items')
-        cart = Cart(**validated_data)
-        for item in items:
-            cart.items.add(Item.objects.get(id=item['id']))
-        cart.set_total_price()
-        cart.save()
