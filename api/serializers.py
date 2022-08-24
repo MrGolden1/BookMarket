@@ -31,11 +31,13 @@ class CartSerializer(serializers.ModelSerializer):
         model = Cart
         fields = ('id', 'useremail','total_price', 'created_at', 'updated_at')
         read_only_fields = ('created_at', 'updated_at', 'total_price')
+    def is_valid(self, raise_exception = True):
+        useremail =  self.initial_data['useremail']
+        if CustomUser.objects.filter(email = useremail).exists():
+            return True
+        return False
     def create(self, validated_data):
-        if CustomUser.objects.filter(email = validated_data.get('usermail')):
             user = CustomUser.objects.get(email = validated_data.get('usermail'))
             cart = Cart(user = user)
             cart.save()
             return cart
-        else:
-            return None
