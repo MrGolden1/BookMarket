@@ -27,13 +27,15 @@ class ItemSerializer(serializers.ModelSerializer):
 
 class CartSerializer(serializers.ModelSerializer):
     useremail = serializers.CharField(source='user.email')
-    itemlist = ItemSerializer(many=True, read_only=True)
     class Meta:
         model = Cart
-        fields = ('id', 'useremail','itemlist' ,'total_price', 'created_at', 'updated_at')
+        fields = ('id', 'useremail','total_price', 'created_at', 'updated_at')
         read_only_fields = ('created_at', 'updated_at', 'total_price')
     def create(self, validated_data):
-        items = validated_data.pop('itemlist')
-        cart = Cart(**validated_data)
-        cart.save()
-        return cart
+        if CustomUser.objects.filter(email = validated_data.get('usermail')):
+            user = CustomUser.objects.get(email = validated_data.get('usermail'))
+            cart = Cart(user = user)
+            cart.save()
+            return cart
+        else:
+            return None
